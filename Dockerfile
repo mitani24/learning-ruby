@@ -1,18 +1,15 @@
-# 最新の Ruby イメージをベースにする
-FROM ruby:latest
+FROM ruby:3.1
 
-# 必要なパッケージをインストールする
+USER root
+
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
 
-# ワークディレクトリを設定する
-WORKDIR /app
+RUN mkdir /webapp
+WORKDIR /webapp
 
-# ホストの Gemfile と Gemfile.lock をコンテナにコピーする
-COPY Gemfile* /app/
+ADD Gemfile /webapp/Gemfile
+ADD Gemfile.lock /webapp/Gemfile.lock
 
-# Bundler を使って依存関係をインストールする
 RUN bundle install
 
-# 環境変数を設定する
-ENV LANG=ja_JP.UTF-8
-ENV TZ=Asia/Tokyo
+ADD . /webapp
